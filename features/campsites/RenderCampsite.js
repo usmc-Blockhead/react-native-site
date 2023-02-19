@@ -21,8 +21,8 @@ const RenderCampsite = ({campsite}) => {
                 <Text style={{ margin: 20 }}>{campsite.description}</Text>
             </Card>
         );
-    } 
+    }; 
     return <View />;
-}
+};
 
 export default RenderCampsite;

@@ -1,7 +1,9 @@
 import { useState } from 'react';
-import { CAMPSITES } from '../shared/campsites';
 import { FlatList } from 'react-native';
 import { Avatar, ListItem } from 'react-native-elements';
+
+import { CAMPSITES } from '../shared/campsites';
+
 
 const DirectoryScreen = ({navigation}) => {
     const [campsites, setCampsites] = useState(CAMPSITES);
