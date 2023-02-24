@@ -11,13 +11,13 @@ const Loading = () => {
 };
 const styles = StyleSheet.create({
     loadingView: {
-        alignItems: 'center'
-        justifyContent: 'center'
+        alignItems: 'center',
+        justifyContent: 'center',
         flex: 1
     },
     loadingText: {
-        color: '#5637DD'
-        fontSize: 14
+        color: '#5637DD',
+        fontSize: 14,
         fontWeight: 'bold'
     }
 })
