@@ -8,6 +8,7 @@ import Constants from 'expo-constants';
 import CampsiteInfoScreen from './CampsiteInfoScreen';
 import DirectoryScreen from './DirectoryScreen';
 import HomeScreen from './HomeScreen';
+import ReservationScreen from './ReservationScreen';
 import AboutScreen from './AboutScreen';
 import ContactScreen from './ContactScreen';
 import logo from '../assets/images/logo.png';
@@ -15,7 +16,6 @@ import { fetchPartners } from '../features/partners/partnersSlice';
 import { fetchCampsites } from '../features/campsites/campsitesSlice';
 import { fetchPromotions } from '../features/promotions/promotionsSlice';
 import { fetchComments } from '../features/comments/commentsSlice';
-import ReservationScreen from './ReservationScreen';
 
 
 const Drawer = createDrawerNavigator();
