@@ -45,7 +45,6 @@ const ContactScreen = () => {
             </Animatable.View>
         </ScrollView>
     );
-
 }
 
 export default ContactScreen;

@@ -1,13 +1,15 @@
 import { useEffect, useState } from 'react';
-import { View, ScrollView, StyleSheet, Image } from 'react-native';
+import { View, StyleSheet, ScrollView, Image } from 'react-native';
 import { CheckBox, Input, Button, Icon } from 'react-native-elements';
 import * as SecureStore from 'expo-secure-store';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import * as ImagePicker from 'expo-image-picker';
 import { baseUrl } from '../shared/baseUrl';
 import logo from '../assets/images/logo.png';
+import * as ImageManipulator from 'expo-image-manipulator';
+import * as MediaLibrary from 'expo-media-library';
 
-const LoginTab = ({navigation}) => {
+const LoginTab = ({ navigation }) => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [remember, setRemember] = useState(false);
@@ -41,12 +43,12 @@ const LoginTab = ({navigation}) => {
             }
         });
     }, []);
-    
+
     return (
         <View style={styles.container}>
             <Input
                 placeholder='Username'
-                lefticon={{type:'font-awesome', name:'user-o'}}
+                leftIcon={{ type: 'font-awesome', name: 'user-o' }}
                 onChangeText={(text) => setUsername(text)}
                 value={username}
                 containerStyle={styles.formInput}
@@ -79,7 +81,7 @@ const LoginTab = ({navigation}) => {
                             color='#fff'
                             iconStyle={{ marginRight: 10 }}
                         />
-                    }    
+                    }
                     buttonStyle={{ backgroundColor: '#5637DD' }}
                 />
             </View>
@@ -87,7 +89,6 @@ const LoginTab = ({navigation}) => {
                 <Button
                     onPress={() => navigation.navigate('Register')}
                     title='Register'
-                    color='#5637DD'
                     type='clear'
                     icon={
                         <Icon
@@ -96,12 +97,12 @@ const LoginTab = ({navigation}) => {
                             color='blue'
                             iconStyle={{ marginRight: 10 }}
                         />
-                    }    
+                    }
                     titleStyle={{ color: 'blue' }}
                 />
             </View>
         </View>
-    )
+    );
 };
 
 const RegisterTab = () => {
@@ -138,34 +139,64 @@ const RegisterTab = () => {
         }
     };
 
+    const getImageFromGallery = async () => {
+        const mediaLibraryPermission =
+            await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+        if (mediaLibraryPermission.status === 'granted') {
+            const capturedImage = await ImagePicker.launchImageLibraryAsync({
+                allowsEditing: true,
+                aspect: [1, 1]
+            });
+            if (!capturedImage.cancelled) {
+                console.log(capturedImage);
+                processImage(capturedImage.uri);
+            }
+        }
+    };
+
     const getImageFromCamera = async () => {
-        const cameraPermission = await ImagePicker.requestCameraPermissionsAsync();
+        const cameraPermission =
+            await ImagePicker.requestCameraPermissionsAsync();
+
         if (cameraPermission.status === 'granted') {
             const capturedImage = await ImagePicker.launchCameraAsync({
                 allowsEditing: true,
                 aspect: [1, 1]
             });
-            if (capturedImage.assets) {
-                console.log(capturedImage.assets[0]);
-                setImageUrl(capturedImage.assets[0].uri);
+            if (!capturedImage.cancelled) {
+                console.log(capturedImage);
+                processImage(capturedImage.uri);
             }
         }
+    };
+
+    const processImage = async (imgUri) => {
+        const processedImage = await ImageManipulator.manipulateAsync(
+            imgUri,
+            [{ resize: { width: 400 } }],
+            { format: ImageManipulator.SaveFormat.PNG }
+        );
+        console.log(processedImage);
+        setImageUrl(processedImage.uri);
+        MediaLibrary.createAssetAsync(processedImage.uri);
     };
 
     return (
         <ScrollView>
             <View style={styles.container}>
-                <View style={styles.container}>
+                <View style={styles.imageContainer}>
                     <Image
                         source={{ uri: imageUrl }}
                         loadingIndicatorSource={logo}
                         style={styles.image}
                     />
                     <Button title='Camera' onPress={getImageFromCamera} />
+                    <Button title='Gallery' onPress={getImageFromGallery} />
                 </View>
                 <Input
                     placeholder='Username'
-                    lefticon={{type:'font-awesome', name:'user-o'}}
+                    leftIcon={{ type: 'font-awesome', name: 'user-o' }}
                     onChangeText={(text) => setUsername(text)}
                     value={username}
                     containerStyle={styles.formInput}
@@ -222,14 +253,13 @@ const RegisterTab = () => {
                                 color='#fff'
                                 iconStyle={{ marginRight: 10 }}
                             />
-                        }    
+                        }
                         buttonStyle={{ backgroundColor: '#5637DD' }}
                     />
                 </View>
             </View>
         </ScrollView>
-    ) 
-    
+    );
 };
 
 const Tab = createBottomTabNavigator();
@@ -276,7 +306,7 @@ const LoginScreen = () => {
                 }}
             />
         </Tab.Navigator>
-    )
+    );
 };
 
 const styles = StyleSheet.create({
